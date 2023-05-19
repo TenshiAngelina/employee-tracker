@@ -1,6 +1,27 @@
 const inquirer = require("inquirer");
 require("console.table");
 const db = require("./db");
+// Object that contanins the name and id of the departments
+let departmentChoices = [
+  { name: "Engineering", VALUE: 1 },
+  { name: "Sales", VALUE: 2 },
+  { name: "Marketing", VALUE: 3 },
+];
+// Object that contanins the name and id of the roles
+let roleChoices =  [
+  { name: "Software Engineer", VALUE: 1 },
+  { name: "Sales Representative", VALUE: 2 },
+  { name: "Marketing Manager", VALUE: 3 },
+];
+// Object that contanins the name and id of the departments
+let managerChoices =  [
+  { name: "John Doe", VALUE: 1 },
+  { name: "Jane Smith", VALUE: 2 },
+  { name: "Bob Johnson", VALUE: 3 },
+  { name: "Alice Williams", VALUE: 4 },
+  { name: "David Brown", VALUE: 5 },  
+];
+
 // Initial function, it prompts initial question
 function init() {
   inquirer
@@ -10,12 +31,12 @@ function init() {
         message: "Welcome to the employee tracker!",
         name: "menu",
         choices: [
+          "Add employee",
+          "Add role",
+          "Add department",
           "View all employees",
           "View all departments",
           "View all roles",
-          "Add Employee",
-          "Add role",
-          "Add Department",
           "Exit app",
         ],
       },
@@ -90,17 +111,19 @@ function createEmployee() {
       name: "last_name"
     },
     {
-      type: "input",
-      message: "What's your role id?",
-      name: "first_name"
+      type: "list",
+      message: "What's your role?",
+      name: "role_id",
+      choices: roleChoices.map((roleChoice) => roleChoice.name)
     },
     {
       type: "list",
-      message: "What is your department id?",
-      name: "first_name"
+      message: "Who is your manager?",
+      name: "manager_id",
+      choices: managerChoices.map((managerChoice) => managerChoice.name)
     }
   ]).then(response => {
-    db.insertEmployee()
+    db.insertEmployee(response.first_name, response.last_name, response.role_id, response.manager_id)
       .then((records) => {
         console.table(records[0]);
         init();
@@ -108,32 +131,28 @@ function createEmployee() {
       .catch((err) => console.log(err));
   })
 }
-
+// Function that creates a new role into the database
 function createRole() {
   inquirer
   .prompt([
     {
       type: "input",
-      message: "Type your title",
+      message: "Type the new role's title",
       name: "title",
     },
     {
       type: "input",
-      message: "Type your salary",
+      message: "Type the new role's salary",
       name: "salary",
     },
     {
       type: "list",
-      message: "Choose your department",
+      message: "Choose the new role's department",
       name: "department_id",
-      choices: [
-        "1",
-        "2",
-        "3"
-      ],
+      choices: departmentChoices.map((departmentChoice) => departmentChoice.name)
     },
   ]).then(response => {
-  db.insertRole(response.title,response.salary,response.department_id)
+  db.insertRole(response.title, response.salary, response.department_id)
     .then((records) => {
       console.table(records[0]);
       init();
