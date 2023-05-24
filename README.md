@@ -2,7 +2,7 @@
 
 ## Description
 
-This application uses MySQL to 
+This application uses MySQL to manage an employee and departments database in a company.
 
 ## Table of Contents
 
@@ -17,13 +17,7 @@ This applications does not need installation other than the use of the terminal.
 
 ## Usage
 
-Provide instructions and examples for use. Include screenshots as needed.
-
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
-
-    ```md
-    ![alt text](assets/images/screenshot.png)
-    ```
+Use walkthrough can be found at this [video](https://youtu.be/Yw5ZJfpEKOo).
 
 ## Credits
 

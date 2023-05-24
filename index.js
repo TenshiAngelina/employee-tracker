@@ -19,7 +19,7 @@ let managerChoices =  [
   { name: "Jane Smith", VALUE: 2 },
   { name: "Bob Johnson", VALUE: 3 },
   { name: "Alice Williams", VALUE: 4 },
-  { name: "David Brown", VALUE: 5 },  
+  { name: "David Brown", VALUE: 5 },
 ];
 
 // Initial function, it prompts initial question
@@ -43,13 +43,13 @@ function init() {
     ])
     .then((response) => {
       switch (response.menu) {
-        case "Add Employee":
+        case "Add employee":
           createEmployee();
           break;
         case "Add role":
           createRole();
           break;
-        case "Add Department":
+        case "Add department":
           createDepartment();
           break;
         case "View all employees":
@@ -67,7 +67,7 @@ function init() {
       }
     });
 }
-// Function that shows all edpartments in the console
+// Function that shows all departments in the console
 function ViewAllDepartments() {
   db.findAllDepartments()
     .then((records) => {
@@ -76,6 +76,8 @@ function ViewAllDepartments() {
     })
     .catch((err) => console.log(err));
 }
+
+//* 3 "show all" functions
 // Function that shows all roles in the console
 function ViewAllRoles() {
   db.findAllRoles()
@@ -96,6 +98,8 @@ function ViewAllEmployees() {
     })
     .catch((err) => console.log(err));
 }
+
+//* 3 "create" functions
 // Function that creates a new employee in the database
 function createEmployee() {
   inquirer
@@ -112,7 +116,7 @@ function createEmployee() {
     },
     {
       type: "list",
-      message: "What's your role?",
+      message: "What's your role id?",
       name: "role_id",
       choices: roleChoices.map((roleChoice) => roleChoice.name)
     },
@@ -123,14 +127,18 @@ function createEmployee() {
       choices: managerChoices.map((managerChoice) => managerChoice.name)
     }
   ]).then(response => {
-    db.insertEmployee(response.first_name, response.last_name, response.role_id, response.manager_id)
-      .then((records) => {
-        console.table(records[0]);
+    const selectedRole = roleChoices.find(roleChoice => roleChoice.name === response.role_id);
+    const roleId = selectedRole ? selectedRole.VALUE : null;
+    const selectedManager = managerChoices.find(managerChoice => managerChoice.name === response.manager_id);
+    const managerId = selectedManager ? selectedManager.VALUE : null;
+    db.insertEmployee(response.first_name, response.last_name, roleId, managerId)
+      .then(() => {
         init();
       })
       .catch((err) => console.log(err));
   })
 }
+
 // Function that creates a new role into the database
 function createRole() {
   inquirer
@@ -152,7 +160,8 @@ function createRole() {
       choices: departmentChoices.map((departmentChoice) => departmentChoice.name)
     },
   ]).then(response => {
-  db.insertRole(response.title, response.salary, response.department_id)
+    const dptId = departmentChoices.find(department => department.name === response.department_id)
+  db.insertRole(response.title, response.salary, dptId.value)
     .then((records) => {
       console.table(records[0]);
       init();
@@ -162,12 +171,22 @@ function createRole() {
 }
 
 function createDepartment() {
-  db.insertDepartment()
+  inquirer
+  .prompt([
+    {
+      type: "input",
+      message: "Type the new department's title",
+      name: "name",
+    },
+
+  ]).then(response => {
+  db.insertDepartment(response.name)
     .then((records) => {
       console.table(records[0]);
       init();
     })
     .catch((err) => console.log(err));
+  })
 }
 
 function exitApp() {

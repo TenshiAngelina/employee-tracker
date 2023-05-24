@@ -14,9 +14,7 @@ function findAllRoles() {
 }
 // Function that creates a new department
 function insertDepartment(departmentname) {
-  return connection
-    .promise()
-    .query(`INSERT INTO departments (name) VALUES (${departmentname});`);
+  return connection.promise().query(`INSERT INTO departments (name) VALUES (?)`,[departmentname]);
 }
 // Function that creates a new role
 function insertRole(title,salary,department_id) {
